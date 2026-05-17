@@ -11,7 +11,7 @@ services:
       - db # db 먼저 실행한 후 앱 실행
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://myuser:mypassword@db:5432/myapp_db
+      - DATABASE_URL=
     restart: always
 
   db:
@@ -19,9 +19,9 @@ services:
     container_name: myapp-db
     restart: always
     environment:
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=myapp_db
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=
     ports:
       - "5432:5432"
     volumes:

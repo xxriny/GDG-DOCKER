@@ -16,3 +16,4 @@ pnpm-debug.log*
 Thumbs.db
 *.log
 .idea/
+.docker-compose.yml
