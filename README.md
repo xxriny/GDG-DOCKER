@@ -1,58 +1,103 @@
-# Google Developers Groups 세션 실습
+# Google Developers Groups 세션 실습 - DOCKER
 
-- 포트폴리오 사이트 구성
-- Next.js 14, Tailwind CSS, Framer Motion으로 구현
+- Next.js + Docker + Cloud Run
+- 간단한 포트폴리오 사이트를 만들고 Docker 컨테이너화를 통해 Google Cloud Run에 배포합니다.
 
-
-## 🛠 기술 스택
-- **Framework**: [Next.js 14 (App Router)](https://nextjs.org/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animation**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Hosting**: [Firebase App Hosting](https://firebase.google.com/docs/app-hosting)
-
-## 📦 프로젝트 구조
-```text
-.
-├── app/              # Next.js App Router (Layout, Pages)
-├── components/       # 재사용 가능한 UI 컴포넌트 (Hero, About, Projects 등)
-├── lib/              # 데이터 정의 및 유틸리티 함수 (data.ts)
-├── public/           # 이미지 및 에셋
-├── firebase.json     # Firebase 설정
-├── apphosting.yaml   # Firebase App Hosting 설정
-└── tailwind.config.js # Tailwind CSS 설정
-```
-
-## ⚙️ 로컬 실행 방법
-
-1. **저장소 클론**
-   ```bash
-   git clone https://github.com/xxrin0299/portfolio-site.git
-   cd portfolio-site
-   ```
-
-2. **의존성 설치**
-   ```bash
-   npm install
-   ```
-
-3. **개발 서버 실행**
-   ```bash
-   npm run dev
-   ```
-   브라우저에서 `http://localhost:3000`을 열어 확인합니다.
-
-## 커스텀
-데이터를 수정하려면 `lib/data.ts` 파일을 수정하세요.
-
-- `profile`: 이름, 한 줄 소개, 현재 역할, 기술 스택 등을 수정할 수 있습니다.
-- `projects`: 진행한 프로젝트의 이름, 설명, 기술 스택 등을 추가하거나 수정할 수 있습니다.
-- `social`: 이메일, GitHub, 블로그 등 소셜 링크를 관리합니다.
-
-## 배포
-이 프로젝트는 **Firebase App Hosting**을 사용하여 배포되었습니다.
-`apphosting.yaml`을 통해 리소스 구성을 관리할 수 있습니다.
+## 🛠 Tech Stack
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS, Framer Motion
+- **Icons**: Lucide React
+- **Deployment**: Google Cloud Run (Docker)
+- **Language**: TypeScript
 
 ---
-© 2024 Kim Yerin. Built with Next.js & Tailwind CSS.
+
+## 💻 Local Development
+
+### 1. 의존성 설치
+```bash
+npm install
+```
+
+### 2. 개발 서버 실행
+```bash
+npm run dev
+```
+접속 주소: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🐳 Docker (Local Test)
+
+Cloud Run에 배포하기 전, 로컬에서 컨테이너 환경을 테스트할 수 있습니다.
+
+### 1. 이미지 빌드 및 확인
+```bash
+docker build -t my-app .
+```
+```bash
+docker images
+```
+### 2. 컨테이너 실행, 중지및 확인
+```bash
+docker run -d -p 3000:8080 my-app
+```
+```bash
+docker ps
+```
+```bash
+docker stop [컨테이너_ID 또는 이름]
+```
+### 3. 로그 확인
+```bash
+# 실시간 로그 스트리밍
+docker logs -f my-app
+# 특정 컨테이너 로그 확인
+docker logs my-app
+```
+### 4. 컨테이너 접속
+```bash
+docker exec -it [컨테이너명] //bin/sh
+```
+```bash
+#단일 명령어
+docker exec [컨테이너명] ls -l
+```
+접속 주소: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## ☁️ Cloud Run Deployment
+
+Google Cloud SDK가 설치되어 있고 로그인이 완료된 상태여야 합니다.
+
+### 1. 프로젝트 설정
+```bash
+gcloud config set project [YOUR_PROJECT_ID]
+```
+
+### 2. 이미지 빌드 및 업로드 (Cloud Build)
+```bash
+gcloud builds submit --tag gcr.io/[YOUR_PROJECT_ID]/portfolio-site .
+```
+
+### 3. Cloud Run 배포
+```bash
+gcloud run deploy portfolio-site \
+  --image gcr.io/[YOUR_PROJECT_ID]/portfolio-site \
+  --platform managed \
+  --region asia-northeast3 \
+  --allow-unauthenticated
+```
+
+---
+
+## 📝 Docker
+
+- **컨테이너 설정**: `Dockerfile`에서 빌드 단계 및 보안 설정을 관리
+
+---
+
+## ⚠️ 주의
+- `next.config.mjs`의 `output: 'standalone'` 설정은 Docker 빌드 용량 최적화를 위해 필수
+- Cloud Run 배포 시 기본 포트는 `8080`으로 설정되어 있습니다.
